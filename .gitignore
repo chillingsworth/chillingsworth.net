@@ -30,3 +30,11 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+.env
+
+personal-website-ks-bucket/*
+
+/.vscode
+
+terraform/
