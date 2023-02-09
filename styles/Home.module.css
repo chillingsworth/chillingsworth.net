@@ -1,14 +1,15 @@
 .main_layout {
   display: flex;
   flex-direction: column;
-  margin: 2.5em;
+  margin-top: 2.5em;
   padding: 2.5em;
 }
 
 .header_main {
   display: flex;
   flex-direction: row;
-  margin-bottom: 1em;
+  margin-bottom: 0em;
+  margin-right: 3em;
   justify-content: space-between;
 }
 
@@ -20,7 +21,7 @@
 
 .body_header_item {
   margin-left: 2em;
-  margin-top: 5em;
+  margin-top: 1em;
 }
 
 .selected_header {
@@ -35,10 +36,60 @@
 .about_area {
   margin-top: 5em;
   margin-left: 2em;
-  background-color: rgba(153, 153, 153, 0.541);
+  margin-right: 3em;
+  background-color: rgb(245, 245, 245);
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  padding: 3em;
+}
+
+.post_preview_body {
+  background-color: rgba(255, 240, 222, 0.904);
+  padding: 1em;
   display: flex;
   flex-direction: column;
   gap: 1em;
-  padding: 3em;
   border-radius: 1em;
+  cursor: pointer;
+  border-radius: .5em;
+  border-style: dotted;
+}
+
+.post_page_body {
+  background-color: rgb(245, 245, 245);
+  padding: 5em;
+  margin: 2em;
+  bottom: 0px;
+  position: relative;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+}
+
+.post_page_text_area {
+  background-color: rgba(255, 240, 222, 0.904);
+  padding-top: 2em;
+  padding-left: 3em;
+  padding-right: 3em;
+  padding-bottom: 3em;
+  margin-top: 3em;
+  border-style: dotted;
+  border-radius: 1em;
+}
+
+#h1 {
+  font-size: 40px;
+}
+
+#h2 {
+  font-size: 30px;
+}
+
+#h3 {
+  font-size: 30px;
+}
+
+#p {
+  font-size: 14px;
 }

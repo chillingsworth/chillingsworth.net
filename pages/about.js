@@ -26,27 +26,24 @@ export default function About() {
       <main>
         <div className={styles.main_layout}>
           <div className={styles.header_main}>
-            <div className={styles.header_item} onClick={redirectHome}>
+            <h1 className={styles.header_item} onClick={redirectHome}>
               Chillingsworth 🏖️
-            </div>
+            </h1>
             <div className={styles.header_item}>
               About
             </div>
           </div>
           <div className={styles.body_header_item}>
-            <div className={styles.selected_header}>
-            About
-            </div>
             <div className={styles.about_area}>
-                <div>
+                <p>
                 Hi, my name's Joshua Killingsworth. I'm a NYC-based husband, father, entrepreneur, machine learning engineer, and book-worm.
-                </div>
-                <div>
+                </p>
+                <p>
                 If you're interested in learning more about me professionally, feel free to reach out to me on LinkedIn: https://www.linkedin.com/in/josh-killingsworth/
-                </div>
-                <div>
-                I love meeting new people, so if you're interested in grabbing a coffe together (in Manhattan), please feel free to email me at josh.kwth@gmail.com
-                </div>
+                </p>
+                <p>
+                I love meeting new clients/friends, so if you're interested in grabbing a coffe together (in Manhattan), please feel free to email me at josh.kwth@gmail.com
+                </p>
             </div>
           </div>
         </div>

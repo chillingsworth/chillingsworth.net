@@ -1,5 +1,8 @@
 include .env
 
+run-app-locally:
+	npm run dev
+
 create-k8s-backend:
 	aws s3api create-bucket \
     --bucket $(KOPS_STATE_STORE) \
@@ -31,6 +34,12 @@ build-dev:
 run-dev:
 	docker run --publish 3000:3000 ${DEV_IMG_NAME}
 
+push-container:
+	aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${ECS_REGISTRY} ; \
+	docker build -t ${DEV_IMG_NAME} . ; \
+	docker tag ${DEV_IMG_NAME} ${ECS_REGISTRY}/${DEV_IMG_NAME} ; \
+	docker push ${ECS_REGISTRY}/${DEV_IMG_NAME}
+
 start-cluster:
 	minikube start
 	kubectl create namespace ${DEPLOYMENT_NAME}
@@ -44,14 +53,11 @@ deploy-dev:
 	kubectl apply -f deployment.yaml
 	kubectl apply -f loadbalancer.yaml
 	
-
 clean-cluster:
 	kubectl delete -n ${DEPLOYMENT_NAME} deployment ${DEPLOYMENT_NAME}
 	kubectl delete -n ${DEPLOYMENT_NAME} job ${DEPLOYMENT_NAME}
 
-push-container:
-	aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/j0l2f7n2
-	docker tag ${DEV_IMG_NAME} public.ecr.aws/j0l2f7n2/${DEV_IMG_NAME}
-	docker push public.ecr.aws/j0l2f7n2/${DEV_IMG_NAME}
+restart-docker:
+	sudo service docker restart
 
 

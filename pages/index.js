@@ -3,9 +3,11 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Inter } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import posts from 'postdata/posts.json';
+import PostPreview from 'components/post-preview'
+import React, { useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] })
-
 
 export default function Home() {
 
@@ -14,6 +16,8 @@ export default function Home() {
   function redirectAbout() {   
     router.push('/about')
   }
+
+  // const [getPosts, setPosts] = useState(posts);
 
   return (
     <>
@@ -26,27 +30,18 @@ export default function Home() {
       <main >
         <div className={styles.main_layout}>
           <div className={styles.header_main}>
-            <div className={styles.header_item}>
+            <h1 className={styles.header_item}>
               Chillingsworth 🏖️
-            </div>
+            </h1>
             <div className={styles.header_item} onClick={redirectAbout}>
               About
             </div>
           </div>
           <div className={styles.body_header_item}>
-            <div className={styles.selected_header}>
-            Home
-            </div>
             <div className={styles.about_area}>
-                <div>
-                Hi, my name's Joshua Killingsworth. I'm a NYC-based husband, father, entrepreneur, machine learning engineer, and book-worm.
-                </div>
-                <div>
-                If you're interested in learning more about me professionally, feel free to reach out to me on LinkedIn: https://www.linkedin.com/in/josh-killingsworth/
-                </div>
-                <div>
-                I love meeting new people, so if you're interested in grabbing a coffe together (in Manhattan), please feel free to email me at josh.kwth@gmail.com
-                </div>
+              {posts.posts.map((post)=>{
+                return <PostPreview id={post.id} header={post.header} body={post.body}></PostPreview>
+              })}
             </div>
           </div>
         </div>

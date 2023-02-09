@@ -1,34 +1,34 @@
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: load-balancer
-#   namespace: default
-#   annotations:
-#     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
-# spec:
-#   type: LoadBalancer
-#   ports:
-#   - port: 3000
-#     targetPort: 3000
-#     protocol: TCP
-#     nodePort: 31000
-#   selector:
-#     app: personal-website
-
-
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  # Name of our service
   name: load-balancer
+  namespace: default
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
-  # LoadBalancer type to allow external access to multiple ports
   type: LoadBalancer
-  selector:
-    # Will deliver external traffic to the pod holding each of our containers
-    app: personal-website
   ports:
-    - protocol: TCP
-      port: 3000
-      targetPort: 3000
-      nodePort: 31000
+  - port: 3000
+    targetPort: 3000
+    protocol: TCP
+    nodePort: 31000
+  selector:
+    app: personal-website
+
+
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   # Name of our service
+#   name: load-balancer
+# spec:
+#   # LoadBalancer type to allow external access to multiple ports
+#   type: LoadBalancer
+#   selector:
+#     # Will deliver external traffic to the pod holding each of our containers
+#     app: personal-website
+#   ports:
+#     - protocol: TCP
+#       port: 3000
+#       targetPort: 3000
+#       nodePort: 31000

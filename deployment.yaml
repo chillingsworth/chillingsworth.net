@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: personal-website
-        image: public.ecr.aws/j0l2f7n2/personal-website:developement
+        image: 954447000905.dkr.ecr.us-east-1.amazonaws.com/personal-website:developement
         ports:
         - containerPort: 3000
