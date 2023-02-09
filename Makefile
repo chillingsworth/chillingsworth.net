@@ -17,9 +17,13 @@ create-aws-cluster:
 
 create-test-cluster:
 	kops create cluster \
-	--name=${NAME} \
-	--cloud=aws \
-	--zones=us-east-1a
+	--name ${NAME} \
+	--cloud aws \
+	--zones us-east-1a ; \
+	kops export kubecfg --admin
+
+delete-test-cluster:
+	kops delete cluster --name ${NAME} --yes
 
 build-dev:
 	docker build -t ${DEV_IMG_NAME} .
