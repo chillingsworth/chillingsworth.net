@@ -1,0 +1,3 @@
+[submodule "simple-kubernetes-cluster"]
+	path = simple-kubernetes-cluster
+	url = git@github.com:chillingsworth/simple-kubernetes-cluster.git
