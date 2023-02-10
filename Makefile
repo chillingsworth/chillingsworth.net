@@ -10,7 +10,7 @@ KOPS_USER_NAME=kops-user
 #Kops
 export NAME=k8s.chillingsworth.net
 export KOPS_STATE_STORE=personal-website-ks-bucket
-ZONES=us-east1a
+ZONES=us-east-1a
 CONTROL_PANE_SIZE=t2.micro
 NODE_SIZE=t2.micro
 NODE_COUNT=3
@@ -26,6 +26,7 @@ run-app-locally:
 create-kops-group:
 	aws iam create-group --group-name ${KOPS_GROUP_NAME}
 
+attach-group-permissions:
 	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess --group-name ${KOPS_GROUP_NAME}
 	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess --group-name ${KOPS_GROUP_NAME}
 	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --group-name ${KOPS_GROUP_NAME}
@@ -34,6 +35,7 @@ create-kops-group:
 	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonSQSFullAccess --group-name ${KOPS_GROUP_NAME}
 	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess --group-name ${KOPS_GROUP_NAME}
 
+create-kops-user:
 	aws iam create-user --user-name ${KOPS_USER_NAME}
 	aws iam add-user-to-group --user-name ${KOPS_USER_NAME} --group-name ${KOPS_GROUP_NAME}
 
@@ -54,6 +56,7 @@ create-aws-cluster:
 	--name ${NAME} \
 	--cloud aws \
 	--state s3://${KOPS_STATE_STORE} \
+	--node-count ${NODE_COUNT} \
 	--zones ${ZONES}
 
 delete-aws-cluster:
@@ -64,20 +67,14 @@ delete-aws-cluster:
 configure-cluster:
 	kops edit cluster --name ${NAME}
 
+deploy-aws-cluster:
+	kops update cluster --name ${NAME} --yes --admin
+
 set-k8s-context:
 	kops export kubecfg --name ${NAME} \
 	--state s3://${KOPS_STATE_STORE} \
 	--admin ;
 
-create-test-cluster:
-	kops create cluster \
-	--name ${NAME} \
-	--state s3://${KOPS_STATE_STORE} \
-	--node-count ${NODE_COUNT} \
-	--zones ${ZONES} \
-	--node-size ${NODE_SIZE} \
-	--master-size ${NODE_SIZE} \
-	--yes
 
 
 
