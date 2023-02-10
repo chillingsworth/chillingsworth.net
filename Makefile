@@ -1,14 +1,75 @@
-include .env
+SHELL := /bin/bash
+
+#Docker
+DEV_IMG_NAME=personal-website:developement
+
+#Aws
+KOPS_GROUP_NAME=kops-group
+KOPS_USER_NAME=kops-user
+
+#Kops
+export NAME=k8s.chillingsworth.net
+export KOPS_STATE_STORE=personal-website-ks-bucket
+ZONES=us-east1a
+CONTROL_PANE_SIZE=t2.micro
+NODE_SIZE=t2.micro
+NODE_COUNT=3
+MASTER_ZONE=us-east-1a
+
+#Kubernetes
+DEPLOYMENT_NAME=personal-website
+ECS_REGISTRY=954447000905.dkr.ecr.us-east-1.amazonaws.com
 
 run-app-locally:
 	npm run dev
 
+create-kops-group:
+	aws iam create-group --group-name ${KOPS_GROUP_NAME}
+
+	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess --group-name ${KOPS_GROUP_NAME}
+	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonRoute53FullAccess --group-name ${KOPS_GROUP_NAME}
+	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess --group-name ${KOPS_GROUP_NAME}
+	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/IAMFullAccess --group-name ${KOPS_GROUP_NAME}
+	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonVPCFullAccess --group-name ${KOPS_GROUP_NAME}
+	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonSQSFullAccess --group-name ${KOPS_GROUP_NAME}
+	aws iam attach-group-policy --policy-arn arn:aws:iam::aws:policy/AmazonEventBridgeFullAccess --group-name ${KOPS_GROUP_NAME}
+
+	aws iam create-user --user-name ${KOPS_USER_NAME}
+	aws iam add-user-to-group --user-name ${KOPS_USER_NAME} --group-name ${KOPS_GROUP_NAME}
+
+create-kops-access-keys:
+	AWS_CREDS_FILE=~/.aws/credentials; \
+	aws iam create-access-key --user-name ${KOPS_USER_NAME} | jq -r '.[]' | \
+	tee >(echo aws_secret_access_key = $$(jq -r '.SecretAccessKey') >> $$AWS_CREDS_FILE) \
+	tee >(echo aws_access_key_id = $$(jq -r '.AccessKeyId') >> $$AWS_CREDS_FILE) \
+	tee >(echo [$$(jq -r '.UserName')] >> $$AWS_CREDS_FILE)
+
 create-k8s-backend:
 	aws s3api create-bucket \
-    --bucket $(KOPS_STATE_STORE) \
-    --region us-east-1
+	--bucket $(KOPS_STATE_STORE) \
+	--region us-east-1
 
 create-aws-cluster:
+	kops create cluster \
+	--name ${NAME} \
+	--cloud aws \
+	--state s3://${KOPS_STATE_STORE} \
+	--zones ${ZONES}
+
+delete-aws-cluster:
+	kops delete cluster \
+	--name ${NAME} \
+	--yes
+
+configure-cluster:
+	kops edit cluster --name ${NAME}
+
+set-k8s-context:
+	kops export kubecfg --name ${NAME} \
+	--state s3://${KOPS_STATE_STORE} \
+	--admin ;
+
+create-test-cluster:
 	kops create cluster \
 	--name ${NAME} \
 	--state s3://${KOPS_STATE_STORE} \
@@ -18,12 +79,8 @@ create-aws-cluster:
 	--master-size ${NODE_SIZE} \
 	--yes
 
-create-test-cluster:
-	kops create cluster \
-	--name ${NAME} \
-	--cloud aws \
-	--zones us-east-1a ; \
-	kops export kubecfg --admin
+
+
 
 delete-test-cluster:
 	kops delete cluster --name ${NAME} --yes
@@ -40,6 +97,14 @@ push-container:
 	docker tag ${DEV_IMG_NAME} ${ECS_REGISTRY}/${DEV_IMG_NAME} ; \
 	docker push ${ECS_REGISTRY}/${DEV_IMG_NAME}
 
+deploy-dev:
+	kops export kubecfg --admin ; \
+	kubectl apply -f deployment.yaml ; \
+	kubectl apply -f loadbalancer.yaml
+
+update-deployment-img:
+	kubectl rollout restart deployment/${DEPLOYMENT_NAME}
+
 start-cluster:
 	minikube start
 	kubectl create namespace ${DEPLOYMENT_NAME}
@@ -48,10 +113,6 @@ start-cluster:
 
 stop-cluster:
 	minikube stop
-
-deploy-dev:
-	kubectl apply -f deployment.yaml
-	kubectl apply -f loadbalancer.yaml
 	
 clean-cluster:
 	kubectl delete -n ${DEPLOYMENT_NAME} deployment ${DEPLOYMENT_NAME}
