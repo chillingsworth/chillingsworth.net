@@ -2,9 +2,9 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Inter } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
-import posts from 'postdata/posts.json';
-import PostPreview from 'components/post-preview'
+import styles from '../styles/Home.module.css'
+import posts from '../postdata/posts.json';
+import PostPreview from '../components/post-preview'
 import React, { useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] })

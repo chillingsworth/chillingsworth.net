@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import Post from 'components/post'
-import styles from '@/styles/Home.module.css'
+import Post from '../../components/post'
+import styles from '../../styles/Home.module.css'
 
 const PostId = () => {
 
