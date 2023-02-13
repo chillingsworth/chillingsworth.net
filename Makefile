@@ -1,15 +1,16 @@
 SHELL := /bin/bash
 
 include .config
+include ./simple-kubernetes-cluster/aws/.config
 export
 
 run-app-locally:
 	npm run dev
 
-build-dev:
+build:
 	docker build -t ${DEV_IMG_NAME} .
 
-run-dev:
+run:
 	docker run --publish 3000:3000 ${DEV_IMG_NAME}
 
 push-container:
@@ -18,17 +19,24 @@ push-container:
 	docker tag ${DEV_IMG_NAME} ${ECS_REGISTRY}/${DEV_IMG_NAME} ; \
 	docker push ${ECS_REGISTRY}/${DEV_IMG_NAME}
 
-deploy-dev:
+deploy:
 	kops export kubecfg --admin ; \
 	kubectl apply -f deployment.yaml ; \
 	kubectl apply -f loadbalancer.yaml
 
+get-deployment:
+	kubectl get deployment
+
+delete:
+	kops export kubecfg --admin ; \
+	kubectl delete -f deployment.yaml ; \
+	kubectl delete -f loadbalancer.yaml
+
+get-svc:
+	kubectl get svc
+
 update-deployment-img:
 	kubectl rollout restart deployment/${DEPLOYMENT_NAME}
-	
-clean-cluster:
-	kubectl delete -n ${DEPLOYMENT_NAME} deployment ${DEPLOYMENT_NAME}
-	kubectl delete -n ${DEPLOYMENT_NAME} job ${DEPLOYMENT_NAME}
 
 restart-docker:
 	sudo service docker restart

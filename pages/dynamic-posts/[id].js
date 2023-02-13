@@ -17,7 +17,6 @@ const PostId = () => {
     router.push('/about')
   }
 
-
   return (
     <>
       <Head>
@@ -41,8 +40,6 @@ const PostId = () => {
       </main>
     </>
   )
-  
-  
 }
 
 export default PostId

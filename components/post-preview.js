@@ -11,12 +11,7 @@ export default function PostPreview(props) {
   let router= useRouter()
 
   function goToPost() {   
-    router.push('/posts/'.concat(props.id)
-    .concat('?')
-    .concat('header=')
-    .concat(props.header)
-    .concat('&body=')
-    .concat(props.body))
+    router.push(props.link)
   }
 
   return (

@@ -15,5 +15,6 @@ spec:
       containers:
       - name: personal-website
         image: 954447000905.dkr.ecr.us-east-1.amazonaws.com/personal-website:developement
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000

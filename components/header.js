@@ -3,17 +3,26 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
+import posts from '../postdata/posts.json';
+import PostPreview from './post-preview'
+import React, { useState } from 'react';
 
 const inter = Inter({ subsets: ['latin'] })
 
-
-export default function About() {
+export default function Header() {
 
   let router= useRouter()
+
+  function redirectAbout() {   
+    router.push('/about')
+  }
 
   function redirectHome() {   
     router.push('/')
   }
+
+
+  // const [getPosts, setPosts] = useState(posts);
 
   return (
     <>
@@ -23,31 +32,17 @@ export default function About() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main >
         <div className={styles.main_layout}>
           <div className={styles.header_main}>
             <h1 className={styles.header_item} onClick={redirectHome}>
               Chillingsworth 🏖️
             </h1>
-            <div className={styles.header_item}>
+            <div className={styles.header_item} onClick={redirectAbout}>
               About
             </div>
           </div>
-          <div className={styles.body_header_item}>
-            <div className={styles.about_area}>
-                <p>
-                Hi, my name&#39;s Joshua Killingsworth. I&#39;m a NYC-based husband, father, entrepreneur, machine learning engineer, and book-worm.
-                </p>
-                <p>
-                If you&#39;re interested in learning more about me professionally, feel free to reach out to me on LinkedIn: https://www.linkedin.com/in/josh-killingsworth/
-                </p>
-                <p>
-                I love meeting new clients/friends, so if you&#39;re interested in grabbing a coffe together (in Manhattan), please feel free to email me at josh.kwth@gmail.com
-                </p>
-            </div>
-          </div>
         </div>
-      </main>
-    </>
-  )
+        </main>
+    </>)
 }
